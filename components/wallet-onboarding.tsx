@@ -27,6 +27,7 @@ import type { AnyFieldApi } from "@tanstack/react-form";
 import { useAtom } from "jotai";
 import { internWalletStateAtom } from "@/components/wallet-home";
 import { createOrThrow } from "@/lib/sigpass";
+import { toast } from "sonner";
 
 
 export default function WalletOnboarding() {
@@ -44,6 +45,7 @@ export default function WalletOnboarding() {
     onSubmit: async ({ value }) => {
       // Do something with form data
       console.log(value)
+      await createInternWallet(value.walletName)
     },
   })
 
@@ -57,23 +59,28 @@ export default function WalletOnboarding() {
      * Store the handle to the private key into some unauthenticated storage
      */
     if (!handle) {
-      return null;
+      toast.error("Failed to create wallet")
+      return
     }
 
     if (internWalletState?.walletIds.length === 0) {
       const newWalletId = `${name}/${handle.toString()}`
       setInternWalletState({
-        walletIds: [...(internWalletState?.walletIds || []), newWalletId],
+        walletIds: [newWalletId],
+        lastWalletId: newWalletId,
         currentAddress: "",
         isUnlocked: false,
       })
+      toast.success("Wallet created")
     } else {
       const newWalletId = `${name}/${handle.toString()}`
       setInternWalletState({
         walletIds: [...(internWalletState?.walletIds || []), newWalletId],
+        lastWalletId: newWalletId,
         currentAddress: "",
         isUnlocked: false,
       })
+      toast.success("Wallet created")
     }
   }
 
@@ -98,6 +105,8 @@ export default function WalletOnboarding() {
       </Dialog>
     )
   }
+
+  // className="fixed inset-0 bg-black/30 backdrop-blur-sm flex"
 
   // mobile
   return (
@@ -169,7 +178,10 @@ export default function WalletOnboarding() {
                               ? '...waiting for a name'
                               : value.length < 3
                                 ? 'Wallet name must be at least 3 characters'
-                                : undefined,
+                                : // check if the wallet name is already taken
+                                  internWalletState?.walletIds.some(id => id.split('/')[0] === value)
+                                    ? 'Wallet name already exists'
+                                    : undefined,
                           onChangeAsyncDebounceMs: 100,
                           onChangeAsync: async ({ value }) => {
                             return (

@@ -2,14 +2,17 @@
 
 
 import { useAtom } from 'jotai';
-import { atomWithStorage, RESET } from 'jotai/utils';
+import { atomWithStorage } from 'jotai/utils';
 import { Button } from "@/components/ui/button";
 import WalletUnlock from "@/components/wallet-unlock";
 import WalletOnboarding from "@/components/wallet-onboarding";
+import { Lock } from "lucide-react";
+import { truncateAddress } from '@/lib/utils';
 
 export interface InternWalletState {
   isUnlocked: boolean;
   walletIds: string[];
+  lastWalletId: string;
   currentAddress: string;
 }
 
@@ -22,25 +25,31 @@ export default function WalletHome() {
   return (
     <div className="flex flex-col gap-8">
       {
-        internWalletState && internWalletState.walletIds.length > 0 ? (
-          <>
-            <div className="flex flex-col gap-2">
-              {
-                internWalletState.walletIds.map((walletId) => (
-                  <div key={walletId}>{walletId}</div>
-                ))
-              }
-          </div>
+        internWalletState && internWalletState.walletIds.length > 0 && !internWalletState.isUnlocked 
+        ? (
           <WalletUnlock />
-          </>
-        ) : (
-          <WalletOnboarding />
-        )
+        ) : internWalletState && internWalletState.isUnlocked 
+          ? (
+            <div className="flex flex-row justify-between items-center">
+              <p>{truncateAddress(internWalletState.currentAddress)}</p>
+              <Button 
+                variant="secondary"
+                size="icon"
+                onClick={() => setInternWalletState({
+                  ...internWalletState,
+                  currentAddress: "",
+                  isUnlocked: false,
+                })}>
+                <Lock />
+              </Button>
+            </div>
+          ) : 
+          internWalletState && internWalletState.walletIds.length === 0 ? (
+            <WalletOnboarding />
+          ) : (
+            <WalletUnlock />
+          )
       }
-      <WalletOnboarding />
-      <Button onClick={() => setInternWalletState(RESET)}>
-        Clear
-      </Button>
     </div>
   )
 }
