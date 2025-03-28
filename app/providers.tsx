@@ -7,6 +7,8 @@ import { mainnet, sepolia } from 'wagmi/chains'
 // tanstack query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+// jotai
+import { Provider as JotaiProvider } from 'jotai';
 
 const queryClient = new QueryClient();
 
@@ -16,16 +18,19 @@ export const config = createConfig({
     [mainnet.id]: http(),
     [sepolia.id]: http(),
   },
+  ssr: true,
 })
 
 export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    </WagmiProvider>
+    <JotaiProvider>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      </WagmiProvider>
+    </JotaiProvider>
   );
 }
 
