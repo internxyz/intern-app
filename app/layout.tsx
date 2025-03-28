@@ -15,14 +15,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'intern',
-  description: 'your AI intern + crypto wallet',
+  title: 'Intern',
+  description: 'Your AI intern + crypto wallet',
   metadataBase: new URL('https://www.intern.xyz'),
   openGraph: {
-    title: 'intern',
-    description: 'your AI intern + crypto wallet',
+    title: 'Intern',
+    description: 'Your AI intern + crypto wallet',
     url: 'https://www.intern.xyz',
-    siteName: 'intern',
+    siteName: 'Intern',
     images: [
       {
         url: '/intern-tbn.png',
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'intern',
-    description: 'your AI intern + crypto wallet',
+    title: 'Intern',
+    description: 'Your AI intern + crypto wallet',
     creator: '@intern_uwu',
     images: ['/intern-tbn.png'],
   },
