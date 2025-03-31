@@ -3,13 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import { Button } from "@/components/ui/button";
 import WalletLoading from '@/components/wallet-loading';
 import WalletUnlock from "@/components/wallet-unlock";
 import WalletOnboarding from "@/components/wallet-onboarding";
-import { Lock } from "lucide-react";
-import { truncateAddress } from '@/lib/utils';
-
+import WalletMain from "@/components/wallet-main";
 
 export interface InternWalletState {
   isUnlocked: boolean;
@@ -22,7 +19,7 @@ export interface InternWalletState {
 export const internWalletStateAtom = atomWithStorage<InternWalletState | undefined>('INTERN_WALLET_STATE', undefined)
 
 export default function WalletHome() {
-  const [internWalletState, setInternWalletState] = useAtom(internWalletStateAtom)
+  const [internWalletState] = useAtom(internWalletStateAtom)
   const [isWalletLoading, setIsWalletLoading] = useState(true)
 
   useEffect(() => {
@@ -50,19 +47,7 @@ export default function WalletHome() {
           <WalletUnlock />
         ) : internWalletState && internWalletState.isUnlocked 
           ? (
-            <div className="flex flex-row justify-between items-center">
-              <p>{truncateAddress(internWalletState.currentAddress)}</p>
-              <Button 
-                variant="secondary"
-                size="icon"
-                onClick={() => setInternWalletState({
-                  ...internWalletState,
-                  currentAddress: "",
-                  isUnlocked: false,
-                })}>
-                <Lock />
-              </Button>
-            </div>
+            <WalletMain />
           ) : (
             <WalletUnlock />
           )
