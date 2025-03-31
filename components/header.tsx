@@ -1,6 +1,9 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Scan } from "lucide-react";
+import LockButton from "@/components/lock-button";
 
 export default function Header() {
   return (
@@ -9,9 +12,12 @@ export default function Header() {
         <AvatarImage src="/logo.svg" />
         <AvatarFallback>i</AvatarFallback>
       </Avatar>
-      <Button variant="ghost" size="icon">
-        <Scan className="w-4 h-4" />
-      </Button>
+      <div className="flex flex-row items-center gap-2">
+        <Button variant="ghost" size="icon">
+          <Scan className="w-4 h-4" />
+        </Button>
+        <LockButton />
+      </div>
     </header>
   );
 }
