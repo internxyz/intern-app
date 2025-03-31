@@ -2,7 +2,7 @@
 
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
-import { Lock, Unlock } from "lucide-react";
+import { Unlock } from "lucide-react";
 import { useAtom } from "jotai";
 import { internWalletStateAtom } from "@/components/wallet-home";
 import { getOrThrow } from "@/lib/sigpass";
@@ -82,7 +82,7 @@ export default function WalletUnlock() {
         onClick={getInternWallet}
         size="lg"
       >
-        <Lock />
+        <Unlock />
         Unlock
       </Button>
     </div>
