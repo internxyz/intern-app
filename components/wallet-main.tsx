@@ -4,6 +4,7 @@ import { Lock } from "lucide-react";
 import { truncateAddress } from "@/lib/utils";
 import { internWalletStateAtom } from "@/components/wallet-home";
 import WalletError from "@/components/wallet-error";
+import MobileNav from "@/components/mobile-nav";
 
 
 export default function WalletMain() {
@@ -16,7 +17,7 @@ export default function WalletMain() {
   }
 
   return (
-    <div className="flex flex-row justify-between items-center">
+    <div className="flex flex-col gap-4">
       <p>{truncateAddress(internWalletState.currentAddress)}</p>
       <Button
         variant="secondary"
@@ -31,6 +32,7 @@ export default function WalletMain() {
       >
         <Lock />
       </Button>
+      <MobileNav />
     </div>
   );
 }
