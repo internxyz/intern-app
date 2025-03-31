@@ -64,8 +64,9 @@ export default function WalletUnlock() {
   // desktop
   if (isDesktop) {
     return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
-      <Button>
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex">
+      <Button
+      >
         <Unlock />
         Unlock
       </Button>
@@ -76,7 +77,11 @@ export default function WalletUnlock() {
   // mobile
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
-      <Button onClick={getInternWallet}>
+      <Button 
+        className="fixed bottom-10 left-1/2 -translate-x-1/2 w-full max-w-[calc(100%-2rem)] mx-auto"
+        onClick={getInternWallet}
+        size="lg"
+      >
         <Lock />
         Unlock
       </Button>
