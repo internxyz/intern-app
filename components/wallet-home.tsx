@@ -44,7 +44,7 @@ export default function WalletHome() {
               </Button>
             </div>
           ) : 
-          internWalletState && internWalletState.walletIds.length === 0 ? (
+          !internWalletState ? (
             <WalletOnboarding />
           ) : (
             <WalletUnlock />

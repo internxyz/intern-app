@@ -28,6 +28,7 @@ import { useAtom } from "jotai";
 import { internWalletStateAtom } from "@/components/wallet-home";
 import { createOrThrow } from "@/lib/sigpass";
 import { toast } from "sonner";
+import { Cuer } from "cuer"
 
 
 export default function WalletOnboarding() {
@@ -114,7 +115,7 @@ export default function WalletOnboarding() {
       <Drawer open={openFirst} onOpenChange={setOpenFirst}>
         <DrawerTrigger asChild>
           <Button 
-            className="fixed bottom-10 left-1/2 -translate-x-1/2 w-3/4"
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 w-full max-w-[calc(100%-2rem)] mx-auto"
             size="lg"
           >
             <WalletMinimal />
@@ -257,6 +258,15 @@ export default function WalletOnboarding() {
                     <div className="h-[4px] w-full rounded-full bg-gray-200 mt-4" />
                   </DrawerDescription>
                 </DrawerHeader>
+                <div className="flex flex-col gap-4 px-4 pb-6 mt-2">
+                  {
+                    internWalletState ? (
+                      <Cuer
+                        value={internWalletState.toString()}
+                      />
+                    ) : null
+                  }
+                </div>
               </DrawerContent>
             </DrawerNested>
           </div>
