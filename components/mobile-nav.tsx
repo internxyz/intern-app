@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { House, Repeat, Blocks, List } from "lucide-react";
 
@@ -19,50 +18,38 @@ export default function MobileNav() {
 
   return (
     <div className="grid grid-cols-4 fixed bottom-0 left-0 w-full h-[80px] bg-background border-t-2 border-muted pt-2">
-      <Button
+      <Link
         className={`flex flex-col justify-start ${isActivePath(
           "/"
-        )} rounded-none h-full`}
-        variant="ghost"
-        asChild
+        )} rounded-none h-full p-4`}
+        href="/"
       >
-        <Link href="/">
-          <House className="w-6 h-6" />
-        </Link>
-      </Button>
-      <Button
+        <House className="w-6 h-6" />
+      </Link>
+      <Link
         className={`flex flex-col justify-start ${isActivePath(
           "/swap"
-        )} rounded-none h-full`}
-        variant="ghost"
-        asChild
+        )} rounded-none h-full p-4`}
+        href="/swap"
       >
-        <Link href="/swap">
-          <Repeat className="w-6 h-6" />
-        </Link>
-      </Button>
-      <Button
+        <Repeat className="w-6 h-6" />
+      </Link>
+      <Link
         className={`flex flex-col justify-start ${isActivePath(
           "/activities"
-        )} rounded-none h-full`}
-        variant="ghost"
-        asChild
+        )} rounded-none h-full p-4`}
+        href="/activities"
       >
-        <Link href="/activities">
-          <List className="w-6 h-6" />
-        </Link>
-      </Button>
-      <Button
+        <List className="w-6 h-6" />
+      </Link>
+      <Link
         className={`flex flex-col justify-start ${isActivePath(
           "/explore"
-        )} rounded-none h-full`}
-        variant="ghost"
-        asChild
+        )} rounded-none h-full p-4`}
+        href="/explore"
       >
-        <Link href="/explore">
-          <Blocks className="w-6 h-6" />
-        </Link>
-      </Button>
+        <Blocks className="w-6 h-6" />
+      </Link>
     </div>
   );
 }
