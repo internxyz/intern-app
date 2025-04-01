@@ -150,7 +150,12 @@ export default function WalletOnboarding() {
         return
       }
 
-      const newWalletId = `pw/${name}/${encryptedBytes.toString()}/${evmAccount.address}`
+      // Convert ArrayBuffer to string that can be properly decrypted later
+      const encryptedBytesString = Array.from(new Uint8Array(encryptedBytes))
+        .map(byte => byte.toString())
+        .join(',');
+
+      const newWalletId = `pw/${name}/${encryptedBytesString}/${evmAccount.address}`
       setInternWalletState({
         walletIds: [...(internWalletState?.walletIds || []), newWalletId],
         lastWalletId: newWalletId,
