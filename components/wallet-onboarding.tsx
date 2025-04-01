@@ -69,7 +69,7 @@ export default function WalletOnboarding() {
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(value)
+      await createInternWalletWithPassword(value.walletName, value.password)
     },
   })
 
@@ -104,7 +104,7 @@ export default function WalletOnboarding() {
       setInternWalletState({
         walletIds: [newWalletId],
         lastWalletId: newWalletId,
-        isUnlocked: false,
+        isUnlocked: 0,
       })
       toast.success("Wallet created")
     } else {
@@ -121,7 +121,7 @@ export default function WalletOnboarding() {
       setInternWalletState({
         walletIds: [...(internWalletState?.walletIds || []), newWalletId],
         lastWalletId: newWalletId,
-        isUnlocked: false,
+        isUnlocked: 0,
       })
       toast.success("Wallet created")
     }
@@ -154,7 +154,7 @@ export default function WalletOnboarding() {
       setInternWalletState({
         walletIds: [...(internWalletState?.walletIds || []), newWalletId],
         lastWalletId: newWalletId,
-        isUnlocked: false,
+        isUnlocked: 0,
       })
       toast.success("Wallet created")
     }

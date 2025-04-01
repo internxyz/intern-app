@@ -78,7 +78,7 @@ export default function ImportFromAnotherDeviceHandler() {
       lastWalletId: selectedWalletIds.includes(rawInternWalletState.lastWalletId) 
         ? rawInternWalletState.lastWalletId 
         : selectedWalletIds[0] || '',
-      isUnlocked: false,
+      isUnlocked: 0,
       // Copy over any remaining properties from the original state, except the ones we explicitly set
       ...Object.fromEntries(
         Object.entries(rawInternWalletState).filter(([key]) => 

@@ -15,7 +15,7 @@ export default function LockButton() {
       onClick={() =>
         setInternWalletState({
           ...internWalletState,
-          isUnlocked: false,
+          isUnlocked: 0,
           walletIds: internWalletState.walletIds,
           lastWalletId: internWalletState.lastWalletId,
         })

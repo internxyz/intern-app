@@ -54,7 +54,7 @@ export default function WalletUnlock() {
       if (evmAccount.address === lastWalletId.split("/")[3]) {
         setInternWalletState({
           ...internWalletState,
-          isUnlocked: true,
+          isUnlocked: Date.now(),
         })
       } else {
         toast.error("Mismatching wallet address")

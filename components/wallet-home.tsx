@@ -9,7 +9,7 @@ import WalletOnboarding from "@/components/wallet-onboarding";
 import WalletMain from "@/components/wallet-main";
 
 export interface InternWalletState {
-  isUnlocked: boolean;
+  isUnlocked: number; // Unix timestamp when wallet was last unlocked, 0 means locked
   walletIds: string[];
   lastWalletId: string;
 }
