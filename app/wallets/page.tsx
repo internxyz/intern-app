@@ -30,9 +30,8 @@ export default function Wallets() {
             const isCurrentWallet = walletId === internWalletState.lastWalletId;
             
             return isCurrentWallet ? (
-              <div className="relative">
+              <div key={walletId.split("/")[0]} className="relative">
                 <Link
-                  key={walletId.split("/")[0]}
                   href={`/`}
                   className="flex flex-col gap-2 bg-secondary h-[80px] rounded-md px-4 py-2 ring-2 ring-offset-4 ring-primary ring-offset-background dark:ring-offset-background"
                 >

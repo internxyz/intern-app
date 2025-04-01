@@ -14,7 +14,7 @@ import { internWalletStateAtom } from "@/components/wallet-home";
 import Link from "next/link";
 
 
-export default function ImportHandler() {
+export default function ImportFromAnotherDeviceHandler() {
 
   const scanRef = useRef<HTMLInputElement>(null);
   const [rawInternWalletState, setRawInternWalletState] =
@@ -104,7 +104,6 @@ export default function ImportHandler() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-bold">Wallets to be imported</h2>
         <div className="flex flex-row gap-2 justify-end">
           <input
             ref={scanRef}

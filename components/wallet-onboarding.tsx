@@ -20,6 +20,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import Link from "next/link";
 import { Lock, WalletMinimal, X, BadgePlus, Import, RotateCcw, Loader2, Check, KeyRound, MonitorSmartphone } from "lucide-react";
 import { useForm } from "@tanstack/react-form";
 import type { AnyFieldApi } from "@tanstack/react-form";
@@ -255,19 +256,23 @@ export default function WalletOnboarding() {
                   <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
                 </DrawerHeader>
                 <div className="flex flex-col gap-4 px-4 pb-6 mt-2">
-                  <Button className="flex flex-row gap-4 h-20 text-left justify-start items-start" variant="secondary">
-                    <KeyRound className="mt-1" />
-                    <div className="flex flex-col gap-1">
-                      <div className="text-sm font-medium">Seed phrase or Private key</div>
-                      <div className="text-xs text-muted-foreground whitespace-normal">Import a wallet using its exported seed phrase or private key</div>
-                    </div>
+                  <Button asChild className="flex flex-row gap-4 h-20 text-left justify-start items-start" variant="secondary">
+                    <Link href="/import-key">
+                      <KeyRound className="mt-1" />
+                      <div className="flex flex-col gap-1">
+                        <div className="text-sm font-medium">Seed phrase or Private key</div>
+                        <div className="text-xs text-muted-foreground whitespace-normal">Import a wallet using its exported seed phrase or private key</div>
+                      </div>
+                    </Link>
                   </Button>
-                  <Button className="flex flex-row gap-4 h-20 text-left justify-start items-start" variant="secondary">
-                    <MonitorSmartphone className="mt-1" />
-                    <div className="flex flex-col gap-1">
-                      <div className="text-sm font-medium">From another device</div>
-                      <div className="text-xs text-muted-foreground whitespace-normal">Import a wallet from another device with Intern Wallet using QR code</div>
-                    </div>
+                  <Button asChild className="flex flex-row gap-4 h-20 text-left justify-start items-start" variant="secondary">
+                    <Link href="/import-from-another-device">
+                      <MonitorSmartphone className="mt-1" />
+                      <div className="flex flex-col gap-1">
+                        <div className="text-sm font-medium">From another device</div>
+                        <div className="text-xs text-muted-foreground whitespace-normal">Import a wallet from another device with Intern Wallet using QR code</div>
+                      </div>
+                    </Link>
                   </Button>
                 </div>
               </DrawerContent>
