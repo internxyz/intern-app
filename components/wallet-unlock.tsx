@@ -11,7 +11,6 @@ import {
   Check,
   Loader2,
   RotateCcw,
-  BadgePlus,
 } from "lucide-react";
 import { useAtom } from "jotai";
 import { internWalletStateAtom } from "@/components/wallet-home";
