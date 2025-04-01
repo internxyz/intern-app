@@ -15,9 +15,11 @@ import Link from "next/link";
 
 
 export default function ImportHandler() {
+
   const scanRef = useRef<HTMLInputElement>(null);
   const [rawInternWalletState, setRawInternWalletState] =
     useState<InternWalletState | null>(null);
+
   const [selectedWalletIds, setSelectedWalletIds] = useState<string[]>([]);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [internWalletState, setInternWalletState] = useAtom(internWalletStateAtom);
@@ -103,25 +105,27 @@ export default function ImportHandler() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-bold">Wallets to be imported</h2>
-        <input
-          ref={scanRef}
-          id="qr-input-file"
-          type="file"
-          accept="image/*"
-          className="hidden"
-        />
-        <Button
-          onClick={(evt) => {
-            evt.preventDefault();
-            scanRef.current?.click();
-          }}
-          variant="outline"
-          className="w-full"
-          size="lg"
-        >
-          <Upload className="w-4 h-4 mr-1" />
-          Upload
-        </Button>
+        <div className="flex flex-row gap-2 justify-end">
+          <input
+            ref={scanRef}
+            id="qr-input-file"
+            type="file"
+            accept="image/*"
+            className="hidden"
+          />
+          <Button
+            onClick={(evt) => {
+              evt.preventDefault();
+              scanRef.current?.click();
+            }}
+            variant="outline"
+            className="w-fit"
+            size="lg"
+          >
+            <Upload />
+            Upload
+          </Button>
+        </div>
       </div>
       {rawInternWalletState && (
         <div className="flex flex-col gap-2">
@@ -173,3 +177,5 @@ export default function ImportHandler() {
     </div>
   );
 }
+
+

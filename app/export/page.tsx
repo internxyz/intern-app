@@ -59,8 +59,7 @@ export default function ExportWallet() {
           />
         </div>
         <p className="text-sm text-muted-foreground text-center max-w-xs">
-          On iPhone, tap and hold down on the QR code and select &quot;Save Image&quot;. On Android, the image will be saved directly or you can select
-          &quot;Download&quot; or &quot;Save to Gallery&quot;.
+          Screenshot the QR code and send it to the device that you want to import the wallet to.
         </p>
       </div>
     </div>

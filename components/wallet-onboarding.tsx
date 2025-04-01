@@ -16,19 +16,17 @@ import {
   DrawerNested,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Lock, WalletMinimal, X, BadgePlus, Import, RotateCcw, Loader2, Check } from "lucide-react";
+import { Lock, WalletMinimal, X, BadgePlus, Import, RotateCcw, Loader2, Check, KeyRound, MonitorSmartphone } from "lucide-react";
 import { useForm } from "@tanstack/react-form";
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { useAtom } from "jotai";
 import { internWalletStateAtom } from "@/components/wallet-home";
 import { createOrThrow } from "@/lib/sigpass";
 import { toast } from "sonner";
-import { Cuer } from "cuer"
 
 
 export default function WalletOnboarding() {
@@ -134,7 +132,7 @@ export default function WalletOnboarding() {
                 </DrawerClose>
               </div>
             </DrawerTitle>
-            <div className="h-[4px] w-full rounded-full bg-gray-200 mt-4" />
+            <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
           </DrawerHeader>
           <div className="flex flex-col gap-4 px-4 pb-6 mt-2">
             <DrawerNested open={openSecond} onOpenChange={setOpenSecond}>
@@ -159,7 +157,7 @@ export default function WalletOnboarding() {
                       </DrawerClose>
                     </div>
                   </DrawerTitle>
-                  <div className="h-[4px] w-full rounded-full bg-gray-200 mt-4" />
+                  <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
                 </DrawerHeader>
                 <div className="flex flex-col gap-4 px-4 pb-6 mt-2">
                   <form
@@ -242,7 +240,7 @@ export default function WalletOnboarding() {
                   </div>
                 </Button>
               </DrawerTrigger>
-              <DrawerContent className="h-[100vh]">
+              <DrawerContent className="h-fit">
                 <DrawerHeader>
                   <DrawerTitle>
                     <div className="flex flex-row items-center justify-between">
@@ -254,18 +252,23 @@ export default function WalletOnboarding() {
                       </DrawerClose>
                     </div>
                   </DrawerTitle>
-                  <DrawerDescription>
-                    <div className="h-[4px] w-full rounded-full bg-gray-200 mt-4" />
-                  </DrawerDescription>
+                  <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
                 </DrawerHeader>
                 <div className="flex flex-col gap-4 px-4 pb-6 mt-2">
-                  {
-                    internWalletState ? (
-                      <Cuer
-                        value={internWalletState.toString()}
-                      />
-                    ) : null
-                  }
+                  <Button className="flex flex-row gap-4 h-20 text-left justify-start items-start" variant="secondary">
+                    <KeyRound className="mt-1" />
+                    <div className="flex flex-col gap-1">
+                      <div className="text-sm font-medium">Seed phrase or Private key</div>
+                      <div className="text-xs text-muted-foreground whitespace-normal">Import a wallet using its exported seed phrase or private key</div>
+                    </div>
+                  </Button>
+                  <Button className="flex flex-row gap-4 h-20 text-left justify-start items-start" variant="secondary">
+                    <MonitorSmartphone className="mt-1" />
+                    <div className="flex flex-col gap-1">
+                      <div className="text-sm font-medium">From another device</div>
+                      <div className="text-xs text-muted-foreground whitespace-normal">Import a wallet from another device with Intern Wallet using QR code</div>
+                    </div>
+                  </Button>
                 </div>
               </DrawerContent>
             </DrawerNested>
