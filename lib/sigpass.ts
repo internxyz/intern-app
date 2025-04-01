@@ -161,5 +161,104 @@ async function getSigpassWallet() {
   }
 }
 
-export { createOrThrow, getOrThrow, checkBrowserWebAuthnSupport, createSigpassWallet, getSigpassWallet, checkSigpassWallet };
+async function encrypt(data: Uint8Array, password: string): Promise<ArrayBuffer | null> {
+  try {
+    // Convert password to key using PBKDF2
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(password),
+      "PBKDF2",
+      false,
+      ["deriveBits", "deriveKey"]
+    );
+    
+    // Derive an AES-GCM key using PBKDF2
+    const key = await crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt,
+        iterations: 310000, // High iteration count for security
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt"]
+    );
+
+    // Generate random IV
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    
+    // Encrypt the data
+    const encrypted = await crypto.subtle.encrypt(
+      {
+        name: "AES-GCM",
+        iv
+      },
+      key,
+      data
+    );
+
+    // Combine salt + iv + encrypted data into single buffer
+    const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+    result.set(salt, 0);
+    result.set(iv, salt.length);
+    result.set(new Uint8Array(encrypted), salt.length + iv.length);
+    
+    return result.buffer;
+  } catch (err) {
+    console.error('Encryption failed:', err);
+    return null;
+  }
+}
+
+async function decrypt(encryptedData: ArrayBuffer, password: string): Promise<Uint8Array | null> {
+  try {
+    // Extract salt, iv and encrypted data
+    const salt = new Uint8Array(encryptedData.slice(0, 16));
+    const iv = new Uint8Array(encryptedData.slice(16, 28));
+    const data = new Uint8Array(encryptedData.slice(28));
+
+    // Recreate key using same process
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(password),
+      "PBKDF2",
+      false,
+      ["deriveBits", "deriveKey"]
+    );
+    
+    const key = await crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt,
+        iterations: 310000,
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["decrypt"]
+    );
+
+    // Decrypt
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: "AES-GCM",
+        iv
+      },
+      key,
+      data
+    );
+
+    return new Uint8Array(decrypted);
+  } catch (err) {
+    console.error('Decryption failed:', err);
+    return null;
+  }
+}
+
+
+export { createOrThrow, getOrThrow, checkBrowserWebAuthnSupport, createSigpassWallet, getSigpassWallet, checkSigpassWallet, encrypt, decrypt };
 

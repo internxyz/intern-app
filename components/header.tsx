@@ -24,7 +24,7 @@ export default function Header() {
             </AvatarFallback>
           </Avatar>
         </Link>
-        {internWalletState && internWalletState.currentAddress && internWalletState.isUnlocked && <WalletShortAddress internWalletState={internWalletState} />}
+        {internWalletState && internWalletState.lastWalletId && internWalletState.isUnlocked && <WalletShortAddress internWalletState={internWalletState} />}
       </div>
       <div className="flex flex-row items-center gap-2">
         <Scan className="w-4 h-4" />

@@ -12,7 +12,6 @@ export interface InternWalletState {
   isUnlocked: boolean;
   walletIds: string[];
   lastWalletId: string;
-  currentAddress: string;
 }
 
 // Set the string key and the initial value

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,9 +27,12 @@ import { useForm } from "@tanstack/react-form";
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { useAtom } from "jotai";
 import { internWalletStateAtom } from "@/components/wallet-home";
-import { createOrThrow } from "@/lib/sigpass";
+import { createOrThrow, encrypt, checkBrowserWebAuthnSupport } from "@/lib/sigpass";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { mnemonicToAccount } from 'viem/accounts'
+import * as bip39 from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english';
 
 export default function WalletOnboarding() {
   const [openFirst, setOpenFirst] = useState(false)
@@ -37,8 +40,15 @@ export default function WalletOnboarding() {
   const [openThird, setOpenThird] = useState(false)
   const [openFourth, setOpenFourth] = useState(false)
   const [openSixth, setOpenSixth] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [internWalletState, setInternWalletState] = useAtom(internWalletStateAtom)
   const isDesktop = useMediaQuery("(min-width: 768px)")
+  const [webAuthnSupportedStatus, setWebAuthnSupportedStatus] = useState<"loading" | "supported" | "unsupported">("loading")
+
+  // check if browser supports WebAuthn
+  useEffect(() => {
+    setWebAuthnSupportedStatus(checkBrowserWebAuthnSupport() ? "supported" : "unsupported")
+  }, [])
 
   // form for creating a new wallet with seed phrase and passkey
   const form = useForm({
@@ -47,7 +57,6 @@ export default function WalletOnboarding() {
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(value)
       await createInternWallet(value.walletName)
     },
   })
@@ -64,36 +73,87 @@ export default function WalletOnboarding() {
     },
   })
 
-
+  // create Intern Wallet with seed phrase and passkey
   async function createInternWallet(name: string) {
     const bytes = crypto.getRandomValues(new Uint8Array(32));
     /**
-     * Store the private key into authenticated storage
+     * Store the seed phrase into authenticated storage
      */
     const handle = await createOrThrow(name, bytes);
     /**
-     * Store the handle to the private key into some unauthenticated storage
+     * Store the handle to the seed phrase into some unauthenticated storage
      */
     if (!handle) {
       toast.error("Failed to create wallet")
       return
     }
 
-    if (internWalletState?.walletIds.length === 0) {
-      const newWalletId = `${name}/${handle.toString()}`
+    const mnemonicPhrase = bip39.entropyToMnemonic(bytes, wordlist);
+
+    if (mnemonicPhrase && internWalletState?.walletIds.length === 0) {
+
+      // derive the evm account from mnemonic
+      const evmAccount = mnemonicToAccount(mnemonicPhrase,
+        {
+          accountIndex: 0,
+          addressIndex: 0,
+        }
+      );
+
+      const newWalletId = `pk/${name}/${handle.toString()}/${evmAccount.address}`
       setInternWalletState({
         walletIds: [newWalletId],
         lastWalletId: newWalletId,
-        currentAddress: "",
         isUnlocked: false,
       })
       toast.success("Wallet created")
     } else {
-      const newWalletId = `${name}/${handle.toString()}`
+
+      // derive the evm account from mnemonic
+      const evmAccount = mnemonicToAccount(mnemonicPhrase,
+        {
+          accountIndex: 0,
+          addressIndex: 0,
+        }
+      );
+      
+      const newWalletId = `pk/${name}/${handle.toString()}/${evmAccount.address}`
       setInternWalletState({
         walletIds: [...(internWalletState?.walletIds || []), newWalletId],
         lastWalletId: newWalletId,
-        currentAddress: "",
+        isUnlocked: false,
+      })
+      toast.success("Wallet created")
+    }
+  }
+
+  // create Intern Wallet with seed phrase and password
+  async function createInternWalletWithPassword(name: string, password: string) {
+    const bytes = crypto.getRandomValues(new Uint8Array(32));
+    const mnemonicPhrase = bip39.entropyToMnemonic(bytes, wordlist);
+    if (!mnemonicPhrase) {
+      toast.error("Failed to create wallet")
+      return
+    }
+
+    if (mnemonicPhrase) {
+      const evmAccount = mnemonicToAccount(mnemonicPhrase,
+        {
+          accountIndex: 0,
+          addressIndex: 0,
+        }
+      );
+
+      const encryptedBytes = await encrypt(bytes, password);
+      if (!encryptedBytes) {
+        toast.error("Failed to encrypt wallet")
+        return
+      }
+
+      const newWalletId = `pw/${name}/${encryptedBytes.toString()}/${evmAccount.address}`
+      setInternWalletState({
+        walletIds: [...(internWalletState?.walletIds || []), newWalletId],
+        lastWalletId: newWalletId,
         isUnlocked: false,
       })
       toast.success("Wallet created")
@@ -122,7 +182,6 @@ export default function WalletOnboarding() {
     )
   }
 
-  // className="fixed inset-0 bg-black/30 backdrop-blur-sm flex"
 
   // mobile
   return (
@@ -158,7 +217,7 @@ export default function WalletOnboarding() {
                   <BadgePlus className="mt-1" />
                   <div className="flex flex-col gap-1">
                     <div className="text-sm font-medium">Create new</div>
-                    <div className="text-xs text-muted-foreground whitespace-normal">Create a fresh address with no previous history</div>
+                    <div className="text-xs text-muted-foreground whitespace-normal">Create a fresh wallet with no previous history</div>
                   </div>
                 </Button>
               </DrawerTrigger>
@@ -174,15 +233,18 @@ export default function WalletOnboarding() {
                       </DrawerClose>
                     </div>
                   </DrawerTitle>
+                  <DrawerDescription>
+                    Fresh wallet with no previous history
+                  </DrawerDescription>
                   <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
                 </DrawerHeader>
                 <div className="flex flex-col gap-4 px-4 pb-6 mt-2">
                   <DrawerNested open={openThird} onOpenChange={setOpenThird}>
-                    <DrawerTrigger asChild>
+                    <DrawerTrigger asChild disabled={webAuthnSupportedStatus === "unsupported"}>
                       <Button className="flex flex-row gap-4 h-20 text-left justify-start items-start pt-4" variant="secondary">
                         <BadgePlus className="mt-1" />
                         <div className="flex flex-col gap-1">
-                          <div className="text-sm font-medium">Seed phrase and Passkey <Badge className="ml-2 text-xs dark:bg-green-400 bg-green-600">Recommended</Badge></div>
+                          <div className="text-sm font-medium">Seed phrase and Passkey {webAuthnSupportedStatus === "supported" && <Badge className="ml-2 text-xs dark:bg-green-400 bg-green-600">Recommended</Badge>}</div>
                           <div className="text-xs text-muted-foreground whitespace-normal mt-2">Using device passkey to secure your seedphrase</div>
                         </div>
                       </Button>
@@ -356,44 +418,39 @@ export default function WalletOnboarding() {
                                       : undefined,
                               }}
                             >
-                              {(field) => (
-                                <div className="flex flex-col gap-1 h-16 mt-4">
-                                  <div className="flex flex-row items-center gap-2">
-                                    <input
-                                      type={field.state.value ? "password" : "text"}
-                                      id={field.name}
-                                      name={field.name}
-                                      value={field.state.value}
-                                      onBlur={field.handleBlur}
-                                      onChange={(e) => field.handleChange(e.target.value)}
-                                      placeholder="Enter a password"
-                                      className="w-full text-2xl outline-none"
-                                    />
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="icon"
-                                      onClick={() => {
-                                        const input = document.getElementById(field.name) as HTMLInputElement;
-                                        if (input.type === "password") {
-                                          input.type = "text";
-                                        } else {
-                                          input.type = "password";
-                                        }
-                                      }}
-                                    >
-                                      {field.state.value && (
-                                        (document.getElementById(field.name) as HTMLInputElement)?.type === "password" ? (
-                                          <Eye className="h-4 w-4" />
-                                        ) : (
-                                          <EyeOff className="h-4 w-4" />
-                                        )
-                                      )}
-                                    </Button>
+                              {(field) => {
+                                return (
+                                  <div className="flex flex-col gap-1 h-16 mt-4">
+                                    <div className="flex flex-row items-center gap-2">
+                                      <input
+                                        type={showPassword ? "text" : "password"}
+                                        id={field.name}
+                                        name={field.name}
+                                        value={field.state.value}
+                                        onBlur={field.handleBlur}
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                        placeholder="Enter a password"
+                                        className="w-full text-2xl outline-none"
+                                      />
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                      >
+                                        {field.state.value && (
+                                          showPassword ? (
+                                            <Eye className="h-4 w-4" />
+                                          ) : (
+                                            <EyeOff className="h-4 w-4" />
+                                          )
+                                        )}
+                                      </Button>
+                                    </div>
+                                    <FieldInfo2 field={field} />
                                   </div>
-                                  <FieldInfo2 field={field} />
-                                </div>
-                              )}
+                                );
+                              }}
                             </form2.Field>
                           </div>
                           <form2.Subscribe
@@ -446,6 +503,9 @@ export default function WalletOnboarding() {
                       </DrawerClose>
                     </div>
                   </DrawerTitle>
+                  <DrawerDescription>
+                    Add an existing wallet by importing or restoring
+                  </DrawerDescription>
                   <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
                 </DrawerHeader>
                 <div className="flex flex-col gap-4 px-4 pb-6 mt-2">
@@ -508,3 +568,4 @@ function FieldInfo2({ field }: { field: AnyFieldApi }) {
     </div>
   )
 }
+

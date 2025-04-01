@@ -16,12 +16,12 @@ export default function WalletShortAddress({
   return (
     <>
       {internWalletState.lastWalletId ? (
-        <button className="text-md font-semibold text-muted-foreground" onClick={() => copyToClipboard(internWalletState.currentAddress)}>
-          {truncateLongText(internWalletState.lastWalletId.split("/")[0])}
+        <button className="text-md font-semibold text-muted-foreground" onClick={() => copyToClipboard(internWalletState.lastWalletId.split("/")[3])}>
+          {truncateLongText(internWalletState.lastWalletId.split("/")[1])}
         </button>
       ) : (
-        <button className="text-md font-semibold text-muted-foreground" onClick={() => copyToClipboard(internWalletState.currentAddress)}>
-          {truncateAddress(internWalletState.currentAddress)}
+        <button className="text-md font-semibold text-muted-foreground" onClick={() => copyToClipboard(internWalletState.lastWalletId.split("/")[3])}>
+          {truncateAddress(internWalletState.lastWalletId.split("/")[3])}
         </button>
       )}
     </>

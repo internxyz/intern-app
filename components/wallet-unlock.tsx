@@ -14,6 +14,7 @@ import { wordlist } from '@scure/bip39/wordlists/english';
 import { toast } from "sonner";
 
 export default function WalletUnlock() {
+
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const [internWalletState, setInternWalletState] = useAtom(internWalletStateAtom)
 
@@ -26,13 +27,12 @@ export default function WalletUnlock() {
       toast.error("No wallet found")
       return
     }
-    const handle = lastWalletId.split("/")[1]
+    const handle = lastWalletId.split("/")[2]
 
-    // i have an Uint8Array like this 17,149,74,43,1,59,153,34,52,96,21,31,63,164,118,159,31,231,81,101 but in string format
     // convert it to a Uint8Array
     const handleUint8Array = new Uint8Array(handle.split(",").map(Number));
     /**
-     * Retrieve the private key from authenticated storage
+     * Retrieve the seed phrase in bytes from authenticated storage
      */
     const bytes = await getOrThrow(handleUint8Array);
     if (!bytes) {
@@ -40,9 +40,8 @@ export default function WalletUnlock() {
       return
     }
     const mnemonicPhrase = bip39.entropyToMnemonic(bytes, wordlist);
-    // const privateKey = fromBytes(bytes, "hex");
+
     if (mnemonicPhrase) {
-      // const account = privateKeyToAccount(privateKey as Address);
       // derive the evm account from mnemonic
       const evmAccount = mnemonicToAccount(mnemonicPhrase,
         {
@@ -50,11 +49,17 @@ export default function WalletUnlock() {
           addressIndex: 0,
         }
       );
-      setInternWalletState({
-        ...internWalletState,
-        currentAddress: evmAccount.address,
-        isUnlocked: true,
-      })
+
+      // compare the evm account address with the last wallet id address
+      if (evmAccount.address === lastWalletId.split("/")[3]) {
+        setInternWalletState({
+          ...internWalletState,
+          isUnlocked: true,
+        })
+      } else {
+        toast.error("Mismatching wallet address")
+        return
+      }
     } else {
       toast.error("Failed to get wallet")
       return
