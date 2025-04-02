@@ -19,11 +19,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Intern',
   description: 'Your AI intern + crypto wallet',
-  metadataBase: new URL('https://www.intern.xyz'),
+  metadataBase: new URL('https://app.intern.xyz'),
   openGraph: {
     title: 'Intern',
     description: 'Your AI intern + crypto wallet',
-    url: 'https://www.intern.xyz',
+    url: 'https://app.intern.xyz',
     siteName: 'Intern',
     images: [
       {
