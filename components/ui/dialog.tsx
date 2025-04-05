@@ -12,6 +12,12 @@ function Dialog({
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
 
+function DialogNested({
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Root>) {
+  return <DialogPrimitive.Root data-slot="dialog-nested" {...props} />
+}
+
 function DialogTrigger({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
@@ -123,6 +129,7 @@ function DialogDescription({
 
 export {
   Dialog,
+  DialogNested,
   DialogClose,
   DialogContent,
   DialogDescription,

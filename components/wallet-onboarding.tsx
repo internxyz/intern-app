@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
+  DialogDescription,
+  DialogNested,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
@@ -168,22 +169,282 @@ export default function WalletOnboarding() {
   // desktop
   if (isDesktop) {
     return (
-      <Dialog open={openFirst} onOpenChange={setOpenFirst}>
-        <DialogTrigger asChild>
-          <Button>
-            <Lock />
-            Create wallet
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center">
+        <Dialog open={openFirst} onOpenChange={setOpenFirst}>
+          <DialogTrigger asChild>
+            <Button>
+              <Lock />
+              New wallet
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>New wallet</DialogTitle>
+              <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
+            </DialogHeader>
+            <div className="flex flex-col gap-4 pb-6 mt-2">
+              <DialogNested open={openSecond} onOpenChange={setOpenSecond}>
+                <DialogTrigger asChild>
+                  <Button className="flex flex-row gap-4 h-fit text-left justify-start items-start" variant="secondary">
+                    <BadgePlus className="mt-1" />
+                    <div className="flex flex-col gap-1">
+                      <div className="text-sm font-medium">Create new</div>
+                      <div className="text-xs text-muted-foreground whitespace-normal">Create a fresh wallet with no previous history</div>
+                    </div>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create new</DialogTitle>
+                    <DialogDescription>Create a fresh wallet with no previous history</DialogDescription>
+                    <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
+                  </DialogHeader>
+                  <div className="flex flex-col gap-4 pb-6 mt-2">
+                    <DialogNested open={openThird} onOpenChange={setOpenThird}>
+                      <DialogTrigger asChild disabled={webAuthnSupportedStatus === "unsupported"}>
+                        <Button className="flex flex-row gap-4 h-20 text-left justify-start items-start pt-4" variant="secondary">
+                          <BadgePlus className="mt-1" />
+                          <div className="flex flex-col gap-1">
+                            <div className="text-sm font-medium">Seed phrase and Passkey {webAuthnSupportedStatus === "supported" && <Badge className="ml-2 text-xs dark:bg-green-400 bg-green-600">Recommended</Badge>}</div>
+                            <div className="text-xs text-muted-foreground whitespace-normal mt-2">Using device passkey to secure your seedphrase</div> 
+                          </div>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Seed phrase and Passkey</DialogTitle>
+                          <DialogDescription>Using device passkey to secure your seedphrase</DialogDescription>
+                          <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
+                        </DialogHeader>
+                        <div className="flex flex-col gap-4 pb-6 mt-2">
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              form.handleSubmit()
+                            }}
+                          >
+                            <div>
+                              <form.Field
+                                name="walletName"
+                                validators={{
+                                  onChange: ({ value }) =>
+                                    !value
+                                      ? '...waiting for a name'
+                                      : value.length < 3
+                                        ? 'Wallet name must be at least 3 characters'
+                                        : undefined,
+                                }}
+                              >
+                                {(field) => (
+                                  <div className="flex flex-col gap-1 h-16">
+                                    <input
+                                      id={field.name}
+                                      name={field.name}
+                                      value={field.state.value}
+                                      onBlur={field.handleBlur}
+                                      onChange={(e) => field.handleChange(e.target.value)}
+                                      placeholder="Type a name for your wallet"
+                                      className="w-full text-2xl outline-none"
+                                    />
+                                    <FieldInfo field={field} />
+                                  </div>
+                                )}
+                              </form.Field>
+                            </div>
+                            <form.Subscribe
+                              selector={(state) => [state.canSubmit, state.isSubmitting]}
+                            >
+                              {([canSubmit, isSubmitting]) => (
+                                <div className="flex flex-row gap-2 mt-4 justify-end">
+                                  <Button size="icon" variant="secondary" type="reset" onClick={() => form.reset()}>
+                                    <RotateCcw />
+                                  </Button>
+                                  <Button size="lg" type="submit" disabled={!canSubmit}>
+                                    {isSubmitting ? 
+                                      <Loader2 className="animate-spin" />
+                                      : 
+                                      <>
+                                        <BadgePlus />
+                                        Create
+                                      </>
+                                    }
+                                  </Button>
+                                </div>
+                              )}
+                            </form.Subscribe>
+                          </form>
+                        </div>
+                      </DialogContent>
+                    </DialogNested>
+                    <DialogNested open={openSixth} onOpenChange={setOpenSixth}>
+                      <DialogTrigger asChild>
+                        <Button className="flex flex-row gap-4 h-20 text-left justify-start items-start pt-4" variant="secondary">
+                          <BadgePlus className="mt-1" />
+                          <div className="flex flex-col gap-1">
+                            <div className="text-sm font-medium">Seed phrase and Password</div>
+                            <div className="text-xs text-muted-foreground whitespace-normal mt-2">Create a wallet with a seed phrase and password</div>
+                          </div>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Seed phrase and Password</DialogTitle>
+                          <DialogDescription>Create a wallet with a seed phrase and password</DialogDescription>
+                          <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
+                        </DialogHeader>
+                        <div className="flex flex-col gap-4 pb-6 mt-2">
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              form2.handleSubmit()
+                            }}
+                          >
+                            <div>
+                              <form2.Field
+                                name="walletName"
+                                validators={{
+                                  onChange: ({ value }) =>
+                                    !value
+                                      ? '...waiting for a name'
+                                      : value.length < 3
+                                        ? 'Wallet name must be at least 3 characters'
+                                        : undefined,
+                                }}
+                              >
+                                {(field) => (
+                                  <div className="flex flex-col gap-1 h-16">
+                                    <input
+                                      id={field.name}
+                                      name={field.name}
+                                      value={field.state.value}
+                                      onBlur={field.handleBlur}
+                                      onChange={(e) => field.handleChange(e.target.value)}
+                                      placeholder="Type a name for your wallet"
+                                      className="w-full text-2xl outline-none"
+                                    />
+                                    <FieldInfo2 field={field} />
+                                  </div>
+                                )}
+                              </form2.Field>
+
+                              <form2.Field
+                                name="password"
+                                validators={{
+                                  onChange: ({ value }) =>
+                                    !value
+                                      ? '...waiting for a password'
+                                      : value.length < 6
+                                        ? 'Password must be at least 6 characters'
+                                        : undefined,
+                                }}
+                              >
+                                {(field) => {
+                                  return (
+                                    <div className="flex flex-col gap-1 h-16 mt-4">
+                                      <div className="flex flex-row items-center gap-2">
+                                        <input
+                                          type={showPassword ? "text" : "password"}
+                                          id={field.name}
+                                          name={field.name}
+                                          value={field.state.value}
+                                          onBlur={field.handleBlur}
+                                          onChange={(e) => field.handleChange(e.target.value)}
+                                          placeholder="Enter a password"
+                                          className="w-full text-2xl outline-none"
+                                        />
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="icon"
+                                          onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                          {field.state.value && (
+                                            showPassword ? (
+                                              <Eye className="h-4 w-4" />
+                                            ) : (
+                                              <EyeOff className="h-4 w-4" />
+                                            )
+                                          )}
+                                        </Button>
+                                      </div>
+                                      <FieldInfo2 field={field} />
+                                    </div>
+                                  );
+                                }}
+                              </form2.Field>
+                            </div>
+                            <form2.Subscribe
+                              selector={(state) => [state.canSubmit, state.isSubmitting]}
+                            >
+                              {([canSubmit, isSubmitting]) => (
+                                <div className="flex flex-row gap-2 mt-4 justify-end">
+                                  <Button size="icon" variant="secondary" type="reset" onClick={() => form2.reset()}>
+                                    <RotateCcw />
+                                  </Button>
+                                  <Button size="lg" type="submit" disabled={!canSubmit}>
+                                    {isSubmitting ? 
+                                      <Loader2 className="animate-spin" />
+                                      : 
+                                      <>
+                                        <BadgePlus />
+                                        Create
+                                      </>
+                                    }
+                                  </Button>
+                                </div>
+                              )}
+                            </form2.Subscribe>
+                          </form>
+                        </div>
+                      </DialogContent>
+                    </DialogNested>
+                  </div>
+                </DialogContent>
+              </DialogNested>
+              <DialogNested open={openFourth} onOpenChange={setOpenFourth}>
+                <DialogTrigger asChild>
+                  <Button className="flex flex-row gap-4 h-fit text-left justify-start items-start" variant="secondary">
+                    <Import className="mt-1" />
+                    <div className="flex flex-col gap-1">
+                      <div className="text-sm font-medium">Add existing</div>
+                      <div className="text-xs text-muted-foreground whitespace-normal">Add an existing wallet by importing or restoring</div>
+                    </div>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add existing</DialogTitle>
+                    <DialogDescription>Add an existing wallet by importing or restoring</DialogDescription>
+                    <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
+                  </DialogHeader>
+                  <div className="flex flex-col gap-4 pb-6 mt-2">
+                    <Button asChild className="flex flex-row gap-4 h-20 text-left justify-start items-start" variant="secondary">
+                      <Link href="/import-key">
+                        <KeyRound className="mt-1" />
+                        <div className="flex flex-col gap-1">
+                          <div className="text-sm font-medium">Seed phrase or Private key</div>
+                          <div className="text-xs text-muted-foreground whitespace-normal">Import a wallet using its exported seed phrase or private key</div>
+                        </div>
+                      </Link>
+                    </Button>
+                    <Button asChild className="flex flex-row gap-4 h-20 text-left justify-start items-start" variant="secondary">
+                      <Link href="/import-from-another-device">
+                        <MonitorSmartphone className="mt-1" />
+                        <div className="flex flex-col gap-1">
+                          <div className="text-sm font-medium">From another device</div>
+                          <div className="text-xs text-muted-foreground whitespace-normal">Import a wallet from another device with Intern Wallet using QR code</div>
+                        </div>
+                      </Link>
+                    </Button>
+                  </div>
+                </DialogContent>
+              </DialogNested>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     )
   }
 

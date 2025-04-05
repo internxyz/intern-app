@@ -33,6 +33,14 @@ import {
   DrawerClose,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function WalletUnlock() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -116,7 +124,7 @@ export default function WalletUnlock() {
         // Convert the comma-separated string back to a Uint8Array
         const encryptedBytes = new Uint8Array(encryptedBytesString.split(',').map(Number));
         const bytes = await decrypt(encryptedBytes.buffer, password);
-        
+
         if (!bytes) {
           toast.error("Incorrect password");
           return;
@@ -156,11 +164,115 @@ export default function WalletUnlock() {
   // desktop
   if (isDesktop) {
     return (
-      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex">
-        <Button>
-          <Unlock />
-          Unlock
-        </Button>
+      <div className="flex fixed inset-0 bg-black/30 backdrop-blur-sm justify-center items-center">
+        {
+          internWalletState?.lastWalletId.split("/")[0] === "pk" ? (
+            <Button onClick={getPasskeyInternWallet} size="lg">
+              <Unlock />
+              Unlock
+            </Button>
+          ) : (
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button size="lg">
+                  <Unlock />
+                  Unlock
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Seed phrase and Password</DialogTitle>
+                  <DialogDescription>Unlock your wallet</DialogDescription>
+                </DialogHeader>
+                <div className="h-[2px] w-full rounded-full bg-muted mt-4" />
+                <div className="flex flex-col gap-4 pb-6 mt-2">
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      form.handleSubmit();
+                    }}
+                  >
+                    <div>
+                      <form.Field
+                        name="password"
+                        validators={{
+                          onChange: ({ value }) =>
+                            !value
+                              ? "...waiting for a password"
+                              : value.length < 6
+                              ? "Password must be at least 6 characters"
+                              : undefined,
+                        }}
+                      >
+                        {(field) => {
+                          return (
+                            <div className="flex flex-col gap-1 h-16 mt-4">
+                              <div className="flex flex-row items-center gap-2">
+                                <input
+                                  type={showPassword ? "text" : "password"}
+                                  id={field.name}
+                                  name={field.name}
+                                  value={field.state.value}
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) =>
+                                    field.handleChange(e.target.value)
+                                  }
+                                  placeholder="Enter a password"
+                                  className="w-full text-2xl outline-none"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                >
+                                  {field.state.value &&
+                                    (showPassword ? (
+                                      <Eye className="h-4 w-4" />
+                                    ) : (
+                                      <EyeOff className="h-4 w-4" />
+                                    ))}
+                                </Button>
+                              </div>
+                              <FieldInfo field={field} />
+                            </div>
+                          );
+                        }}
+                      </form.Field>
+                      <form.Subscribe
+                        selector={(state) => [state.canSubmit, state.isSubmitting]}
+                      >
+                        {([canSubmit, isSubmitting]) => (
+                          <div className="flex flex-row gap-2 mt-4 justify-end">
+                            <Button
+                              size="icon"
+                              variant="secondary"
+                              type="reset"
+                              onClick={() => form.reset()}
+                            >
+                              <RotateCcw />
+                            </Button>
+                            <Button size="lg" type="submit" disabled={!canSubmit}>
+                              {isSubmitting ? (
+                                <Loader2 className="animate-spin" />
+                              ) : (
+                                <>
+                                  <Unlock />
+                                  Unlock
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        )}
+                      </form.Subscribe>
+                    </div>
+                  </form>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )
+        }
       </div>
     );
   }
