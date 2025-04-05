@@ -16,7 +16,25 @@ export default function Header() {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {
-    return null;
+    return (
+      <header className="fixed top-4 left-4 w-full flex flex-row items-center justify-between border-b border-muted-foreground pb-4 pr-8">
+        <div className="flex flex-row items-center gap-2 ml-60">
+          <Link href="/wallets">
+            <Avatar>
+              <AvatarImage src="/logo.svg" />
+              <AvatarFallback>
+                <Image src="/logo.svg" alt="logo" width={24} height={24} />
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+          {internWalletState && internWalletState.lastWalletId && internWalletState.isUnlocked && <WalletShortAddress internWalletState={internWalletState} />}
+        </div>
+        <div className="flex flex-row items-center gap-2">
+          <Scan className="w-4 h-4" />
+          <LockButton />
+        </div>
+      </header>
+    )
   }
 
   return (
