@@ -8,10 +8,16 @@ import { internWalletStateAtom } from "@/components/wallet-home";
 import WalletShortAddress from "@/components/wallet-short-address";
 import Image from "next/image";
 import Link from "next/link";
-
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export default function Header() {
   const [internWalletState] = useAtom(internWalletStateAtom);
+
+  const isDesktop = useMediaQuery("(min-width: 768px)")
+
+  if (isDesktop) {
+    return null;
+  }
 
   return (
     <header className="flex flex-row items-center justify-between">

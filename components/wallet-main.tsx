@@ -3,7 +3,7 @@ import { internWalletStateAtom } from "@/components/wallet-home";
 import WalletError from "@/components/wallet-error";
 import MobileNav from "@/components/mobile-nav";
 import { useMediaQuery } from "@/hooks/use-media-query"
-
+import DesktopSidebar from "@/components/desktop-sidebar";
 
 export default function WalletMain() {
   const [internWalletState] = useAtom(
@@ -18,8 +18,8 @@ export default function WalletMain() {
 
   if (isDesktop) {
     return (
-      <div className="flex flex-col gap-4">
-        None
+      <div className="flex flex-row">
+        <DesktopSidebar />
       </div>
     );
   }
