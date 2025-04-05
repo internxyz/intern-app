@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Home, Users, AppWindow, Lock } from "lucide-react";
+import { Home, Repeat, List, Blocks } from "lucide-react";
 import { usePathname } from 'next/navigation'
 
 export default function DesktopSidebar() {
@@ -22,22 +22,22 @@ export default function DesktopSidebar() {
             Home
           </Link>
         </Button>
-        <Button asChild variant="ghost" className={`w-full justify-start gap-3 h-12 ${isActive("/address-book") ? "bg-muted" : "text-muted-foreground"}`} size="lg">
-          <Link href="/address-book">
-            <Users />
-            Address Book
+        <Button asChild variant="ghost" className={`w-full justify-start gap-3 h-12 ${isActive("/swap") ? "bg-muted" : "text-muted-foreground"}`} size="lg">
+          <Link href="/swap">
+            <Repeat />
+            Swap
           </Link>
         </Button>
-        <Button asChild variant="ghost" className={`w-full justify-start gap-3 h-12 ${isActive("/connected-apps") ? "bg-muted" : "text-muted-foreground"}`} size="lg">
-          <Link href="/connected-apps">
-            <AppWindow />
-            Connected Apps
+        <Button asChild variant="ghost" className={`w-full justify-start gap-3 h-12 ${isActive("/activities") ? "bg-muted" : "text-muted-foreground"}`} size="lg">
+          <Link href="/activities">
+            <List />
+            Activities
           </Link>
         </Button>
-        <Button asChild variant="ghost" className={`w-full justify-start gap-3 h-12 ${isActive("/security") ? "bg-muted" : "text-muted-foreground"}`} size="lg">
-          <Link href="/security">
-            <Lock />
-            Security
+        <Button asChild variant="ghost" className={`w-full justify-start gap-3 h-12 ${isActive("/explore") ? "bg-muted" : "text-muted-foreground"}`} size="lg">
+          <Link href="/explore">
+            <Blocks />
+            Explore
           </Link>
         </Button>
       </div>
