@@ -50,7 +50,6 @@ async function createOrThrow(name: string, data: Uint8Array) {
   }
 }
 
-
 /**
  * Use WebAuthn to retrieve authentication-protected arbitrary bytes
  *

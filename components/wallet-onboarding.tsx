@@ -137,7 +137,7 @@ export default function WalletOnboarding() {
       return
     }
 
-    if (mnemonicPhrase) {
+    if (mnemonicPhrase && internWalletState?.walletIds.length === 0) {
       const evmAccount = mnemonicToAccount(mnemonicPhrase,
         {
           accountIndex: 0,
@@ -157,6 +157,31 @@ export default function WalletOnboarding() {
         .join(',');
 
       const newWalletId = `pw/${name}/${encryptedBytesString}/${evmAccount.address}`
+      setInternWalletState({
+        walletIds: [...(internWalletState?.walletIds || []), newWalletId],
+        lastWalletId: newWalletId,
+        isUnlocked: 0,
+      })
+      toast.success("Wallet created")
+    } else {
+      const evmAccount = mnemonicToAccount(mnemonicPhrase,
+        {
+          accountIndex: 0,
+          addressIndex: 0,
+        }
+      );
+
+      const encryptedBytes = await encrypt(bytes, password);
+      if (!encryptedBytes) {
+        toast.error("Failed to encrypt wallet")
+        return
+      }
+
+      const encryptedBytesString = Array.from(new Uint8Array(encryptedBytes))
+        .map(byte => byte.toString())
+        .join(',');
+        
+      const newWalletId = `pw/${name}/${encryptedBytesString}/${evmAccount.address}`  
       setInternWalletState({
         walletIds: [...(internWalletState?.walletIds || []), newWalletId],
         lastWalletId: newWalletId,
@@ -328,7 +353,6 @@ export default function WalletOnboarding() {
                                   </div>
                                 )}
                               </form2.Field>
-
                               <form2.Field
                                 name="password"
                                 validators={{

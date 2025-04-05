@@ -22,6 +22,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cuer": "^0.0.2",
+    "dexie": "^4.0.11",
+    "dexie-react-hooks": "^1.1.7",
     "html5-qrcode": "^2.3.8",
     "jotai": "^2.12.2",
     "lucide-react": "^0.485.0",

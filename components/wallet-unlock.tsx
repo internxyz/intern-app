@@ -108,6 +108,41 @@ export default function WalletUnlock() {
         return;
       }
     }
+
+    if (walletFormat === "rpk") {
+      // convert it to a Uint8Array
+      const handleUint8Array = new Uint8Array(handle.split(",").map(Number));
+      /**
+       * Retrieve the seed phrase in bytes from authenticated storage
+       */
+      const bytes = await getOrThrow(handleUint8Array);
+      if (!bytes) {
+        toast.error("Failed to get wallet");
+        return;
+      }
+      const mnemonicPhrase = bip39.entropyToMnemonic(bytes, wordlist);
+
+      if (mnemonicPhrase) {
+        // derive the evm account from mnemonic
+        const evmAccount = mnemonicToAccount(mnemonicPhrase, {
+          accountIndex: 0,
+          addressIndex: 0,
+        });
+
+        if (evmAccount.address === lastWalletId.split("/")[3].split("+")[0].split(":")[1]) {
+          setInternWalletState({
+            ...internWalletState,
+            isUnlocked: Date.now(),
+          });
+        } else {
+          toast.error("Mismatching wallet address");
+          return;
+        }
+      } else {
+        toast.error("Failed to get wallet");
+        return;
+      }
+    }
   }
 
   async function getPasswordInternWallet(password: string) {
@@ -167,6 +202,11 @@ export default function WalletUnlock() {
       <div className="flex fixed inset-0 bg-black/30 backdrop-blur-sm justify-center items-center">
         {
           internWalletState?.lastWalletId.split("/")[0] === "pk" ? (
+            <Button onClick={getPasskeyInternWallet} size="lg">
+              <Unlock />
+              Unlock
+            </Button>
+          ) : internWalletState?.lastWalletId.split("/")[0] === "rpk" ? (
             <Button onClick={getPasskeyInternWallet} size="lg">
               <Unlock />
               Unlock

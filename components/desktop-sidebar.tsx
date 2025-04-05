@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home, Repeat, List, Blocks } from "lucide-react";
-import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation';
+
 
 export default function DesktopSidebar() {
   const pathname = usePathname()
