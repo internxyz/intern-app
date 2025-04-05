@@ -17,7 +17,7 @@ export default function MobileNav() {
   }
 
   return (
-    <div className="grid grid-cols-4 fixed bottom-0 left-0 w-full h-[80px] bg-background border-t-2 border-muted pt-2">
+    <div className="grid grid-cols-4 justify-items-center fixed bottom-0 left-0 w-full h-[80px] bg-background border-t-2 border-muted pt-2">
       <Link
         className={`flex flex-col justify-start ${isActivePath(
           "/"
