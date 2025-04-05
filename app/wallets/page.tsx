@@ -38,7 +38,7 @@ export default function Wallets() {
         </div>
       </div>
       {internWalletState && internWalletState.walletIds.length > 0 && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {internWalletState.walletIds.map((walletId) => {
             const isCurrentWallet = walletId === internWalletState.lastWalletId;
             
