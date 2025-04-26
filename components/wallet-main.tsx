@@ -1,9 +1,9 @@
 import { useAtom } from "jotai";
 import { internWalletStateAtom } from "@/components/wallet-home";
 import WalletError from "@/components/wallet-error";
-import MobileNav from "@/components/mobile-nav";
 import { useMediaQuery } from "@/hooks/use-media-query"
-import DesktopSidebar from "@/components/desktop-sidebar";
+import TokenPortfolio from "@/components/token-portfolio";
+
 
 export default function WalletMain() {
   const [internWalletState] = useAtom(
@@ -18,15 +18,15 @@ export default function WalletMain() {
 
   if (isDesktop) {
     return (
-      <div className="flex flex-row">
-        <DesktopSidebar />
+      <div className="grid grid-cols-3 gap-4">
+        <TokenPortfolio />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <MobileNav />
+    <div className="flex flex-col gap-4 w-full h-full">
+      <TokenPortfolio />
     </div>
   );
 }

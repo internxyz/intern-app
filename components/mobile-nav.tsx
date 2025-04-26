@@ -3,11 +3,12 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { House, Repeat, Blocks, List } from "lucide-react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 
 export default function MobileNav() {
   const pathname = usePathname();
-
+  const isDesktop = useMediaQuery("(min-width: 768px)")
   function isActivePath(path: string) {
     if (path === pathname) {
       return "text-primary";
@@ -17,7 +18,7 @@ export default function MobileNav() {
   }
 
   return (
-    <div className="grid grid-cols-4 justify-items-center fixed bottom-0 left-0 w-full h-[80px] bg-background border-t-2 border-muted pt-2">
+    <div className={`grid grid-cols-4 justify-items-center fixed bottom-0 left-0 w-full h-[80px] bg-background border-t-2 border-muted pt-2 ${isDesktop ? "hidden" : ""}`}>
       <Link
         className={`flex flex-col justify-start ${isActivePath(
           "/"

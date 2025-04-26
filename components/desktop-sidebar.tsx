@@ -5,14 +5,15 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home, Repeat, List, Blocks } from "lucide-react";
 import { usePathname } from 'next/navigation';
-
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export default function DesktopSidebar() {
   const pathname = usePathname()
-
+  const isDesktop = useMediaQuery("(min-width: 768px)")
   const isActive = (path: string) => pathname === path
+
   return (
-    <div className="fixed left-0 top-0 flex flex-col w-60 border-r border-muted-foreground h-screen bg-background">
+    <div className={`fixed left-0 top-0 flex flex-col w-60 border-r border-muted-foreground h-screen bg-background ${isDesktop ? "" : "hidden"}`}>
       <div className="flex flex-row items-center justify-between p-4">
         <Image src="/logo.svg" alt="logo" width={24} height={24} />
       </div>

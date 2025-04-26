@@ -5,6 +5,10 @@ import { Providers } from "@/app/providers";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/react"
+import Header from "@/components/header";
+import DesktopSidebar from "@/components/desktop-sidebar";
+import MobileNav from "@/components/mobile-nav";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,14 +21,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Intern',
+  title: 'Intern app',
   description: 'Your AI intern + crypto wallet',
   metadataBase: new URL('https://app.intern.xyz'),
   openGraph: {
-    title: 'Intern',
+    title: 'Intern app',
     description: 'Your AI intern + crypto wallet',
     url: 'https://app.intern.xyz',
-    siteName: 'Intern',
+    siteName: 'Intern app',
     images: [
       {
         url: '/intern-tbn.png',
@@ -38,9 +42,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Intern',
+    title: 'Intern app',
     description: 'Your AI intern + crypto wallet',
-    creator: '@intern_uwu',
+    creator: '@internxyz_',
     images: ['/intern-tbn.png'],
   },
 }
@@ -66,10 +70,17 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
-            <main className="p-4">
-              {children}
+            <main className="flex flex-col min-h-screen p-4">
+              <Header />
+              <div className="flex flex-1">
+                <DesktopSidebar />
+                <div className="flex-1 pl-4 pt-4 md:pl-60 md:pt-16">
+                  {children}
+                </div>
+              </div>
+              <MobileNav />
             </main>
-            <Toaster />
+            <Toaster position="top-right" />
           </Providers>
         </ThemeProvider>
         <Analytics />

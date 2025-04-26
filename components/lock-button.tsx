@@ -20,6 +20,7 @@ export default function LockButton() {
           lastWalletId: internWalletState.lastWalletId,
         })
       }
+      className="hover:cursor-pointer"
     >
       <Lock />
     </Button>

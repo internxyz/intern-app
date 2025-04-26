@@ -2,7 +2,7 @@
 
 // wagmi
 import { http, createConfig, WagmiProvider } from 'wagmi'
-import { mainnet, sepolia } from 'wagmi/chains'
+import { sepolia, baseSepolia, arbitrumSepolia } from 'wagmi/chains'
 
 // tanstack query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -13,10 +13,11 @@ import { Provider as JotaiProvider } from 'jotai';
 const queryClient = new QueryClient();
 
 export const config = createConfig({
-  chains: [mainnet, sepolia],
+  chains: [sepolia, baseSepolia, arbitrumSepolia],
   transports: {
-    [mainnet.id]: http(),
     [sepolia.id]: http(),
+    [baseSepolia.id]: http(),
+    [arbitrumSepolia.id]: http(),
   },
   ssr: true,
 })
