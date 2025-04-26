@@ -9,7 +9,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import useMultichainBalances from "@/hooks/use-multichain-balances";
 
 
 interface TokenCardProps {
@@ -29,32 +30,8 @@ interface TokenCardMiniProps {
 }
 
 function TokenCardCombined({ token, address }: TokenCardProps) {
-  const balanceQueries = token.addresses.map((addr) => {
-    const chainId = parseInt(addr.address.split(":")[1]);
-    return { chainId, address: addr.address };
-  });
 
-  const balance1 = useBalance({
-    address: address as Address,
-    chainId: balanceQueries[0]?.chainId,
-  });
-  const balance2 = useBalance({
-    address: address as Address,
-    chainId: balanceQueries[1]?.chainId,
-  });
-  const balance3 = useBalance({
-    address: address as Address,
-    chainId: balanceQueries[2]?.chainId,
-  });
-
-  const balances = [
-    { balance: balance1.data?.value || BigInt(0), isLoading: balance1.isLoading },
-    { balance: balance2.data?.value || BigInt(0), isLoading: balance2.isLoading },
-    { balance: balance3.data?.value || BigInt(0), isLoading: balance3.isLoading },
-  ];
-
-  const totalBalance = balances.reduce((sum, { balance }) => sum + balance, BigInt(0));
-  const isLoading = balances.some(({ isLoading }) => isLoading);
+  const { balances, totalBalance, isLoading } = useMultichainBalances(token, address as Address);
 
   return (
     <Accordion type="single" collapsible>
@@ -87,7 +64,7 @@ function TokenCardCombined({ token, address }: TokenCardProps) {
               <TokenCardMini 
                 key={addr.address} 
                 token={addr} 
-                balance={balances[index].balance} 
+                balance={balances[index].data?.value || BigInt(0)} 
                 isLoading={balances[index].isLoading} 
               />
             ))}
