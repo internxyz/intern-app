@@ -1,7 +1,7 @@
 export const tokenList: Token[] = [
   {
     id: "eth",
-    name: "Ether",
+    name: "Ethereum",
     symbol: "ETH",
     decimals: 18,
     image: "/logos/eth.svg",

@@ -74,7 +74,7 @@ export default function RootLayout({
               <Header />
               <div className="flex flex-1">
                 <DesktopSidebar />
-                <div className="flex-1 pl-4 pt-4 md:pl-60 md:pt-16">
+                <div className="flex-1 pl-4 pt-4 md:pl-60 md:pt-14">
                   {children}
                 </div>
               </div>

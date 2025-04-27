@@ -12,18 +12,21 @@ export default function WalletMain() {
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  // if wallet is not connected, show error
   if (!internWalletState) {
     return <WalletError />;
   }
 
+  // destop rendering
   if (isDesktop) {
     return (
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid lg:grid-cols-3 gap-4">
         <TokenPortfolio />
       </div>
     );
   }
 
+  // mobile rendering
   return (
     <div className="flex flex-col gap-4 w-full h-full">
       <TokenPortfolio />

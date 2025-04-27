@@ -10,8 +10,8 @@ export default function TokenPortfolio() {
 
   if (isDesktop) {
     return (
-      <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">Portfolio</h1>
+      <div className="flex flex-col gap-2">
+        <h1 className="text-2xl font-bold mt-2">$ -</h1>
         {tokenList.map((token) => (
           <TokenCard
             key={token.id}
