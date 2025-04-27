@@ -7,8 +7,13 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 
 
 export default function MobileNav() {
+  // get the pathname
   const pathname = usePathname();
+
+  // check if the screen is desktop
   const isDesktop = useMediaQuery("(min-width: 768px)")
+
+  // check if the path is active
   function isActivePath(path: string) {
     if (path === pathname) {
       return "text-primary";

@@ -462,15 +462,6 @@ export default function WalletOnboarding() {
                         </div>
                       </Link>
                     </Button>
-                    <Button asChild className="flex flex-row gap-4 h-20 text-left justify-start items-start" variant="secondary">
-                      <Link href="/import-watch-only">
-                        <Eye className="mt-1" />
-                        <div className="flex flex-col gap-1">
-                          <div className="text-sm font-medium">Watch only</div>
-                          <div className="text-xs text-muted-foreground whitespace-normal">Import a watch only wallet</div>
-                        </div>
-                      </Link>
-                    </Button>
                   </div>
                 </DialogContent>
               </DialogNested>

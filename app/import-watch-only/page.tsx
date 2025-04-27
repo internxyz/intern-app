@@ -32,7 +32,6 @@ export default function ImportWatchOnlyPage() {
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(value);
       if (walletPasswordEnabled) {
         await createWatchOnlySignInCredentialWithPassword(value.walletName, value.password, value.walletAddress);
       } else {
@@ -263,7 +262,7 @@ export default function ImportWatchOnlyPage() {
                   </div>
                 )}
               </form.Field>
-              <p className="text-sm text-muted-foreground">Wallet information is automaticallyprotected with Passkey, but you can choose to use a Password instead.</p>
+              <p className="text-sm text-muted-foreground">Wallet information is automatically protected with Passkey, but you can choose to use a Password instead.</p>
               <Button variant="secondary" className="w-fit" onClick={() => setWalletPasswordEnabled(!walletPasswordEnabled)}>
                 {walletPasswordEnabled ? "Disable password" : "Enable password"}
               </Button>

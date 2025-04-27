@@ -329,6 +329,15 @@ export default function WalletUnlock() {
           <Unlock />
           Unlock
         </Button>
+      ) : internWalletState?.lastWalletId.split("/")[0] === "rpk" ? (
+        <Button 
+          className="fixed bottom-10 left-1/2 -translate-x-1/2 w-full max-w-[calc(100%-2rem)] mx-auto"
+          onClick={getPasskeyInternWallet}
+          size="lg"
+        >
+          <Unlock />
+          Unlock
+        </Button>
       ) : (
         <Drawer open={open} onOpenChange={setOpen}>
           <DrawerTrigger asChild>

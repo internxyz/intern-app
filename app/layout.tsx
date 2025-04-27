@@ -2,13 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
-import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/react"
-import Header from "@/components/header";
-import DesktopSidebar from "@/components/desktop-sidebar";
-import MobileNav from "@/components/mobile-nav";
-
+import AppLayout from "@/components/app-layout"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,7 +45,6 @@ export const metadata: Metadata = {
   },
 }
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -70,17 +65,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
-            <main className="flex flex-col min-h-screen p-4">
-              <Header />
-              <div className="flex flex-1">
-                <DesktopSidebar />
-                <div className="flex-1 pl-4 pt-4 md:pl-60 md:pt-14">
-                  {children}
-                </div>
-              </div>
-              <MobileNav />
-            </main>
-            <Toaster position="top-right" />
+            <AppLayout>
+              {children}
+            </AppLayout>
           </Providers>
         </ThemeProvider>
         <Analytics />

@@ -3,6 +3,7 @@ import { internWalletStateAtom } from "@/components/wallet-home";
 import WalletError from "@/components/wallet-error";
 import { useMediaQuery } from "@/hooks/use-media-query"
 import TokenPortfolio from "@/components/token-portfolio";
+import MobileNav from "./mobile-nav";
 
 
 export default function WalletMain() {
@@ -29,6 +30,7 @@ export default function WalletMain() {
   // mobile rendering
   return (
     <div className="flex flex-col gap-4 w-full h-full">
+      <MobileNav />
       <TokenPortfolio />
     </div>
   );
