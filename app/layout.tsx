@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Analytics } from "@vercel/analytics/react"
 import AppLayout from "@/components/app-layout"
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,6 +55,11 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-title" content="Intern" />
       </head>
+      <Script
+        defer
+        src="https://analytics.zxstim.com/script.js"
+        data-website-id="8de8a545-024e-4c76-bbca-172bdb0c2020"
+      />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -70,7 +75,6 @@ export default function RootLayout({
             </AppLayout>
           </Providers>
         </ThemeProvider>
-        <Analytics />
       </body>
     </html>
   );
